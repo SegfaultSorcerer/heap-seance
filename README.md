@@ -29,13 +29,44 @@ Required core tools:
 - `jcmd`, `jmap`, `jstat`, `jfr` (OpenJDK 17+)
 
 Required deep-forensics tools:
-- Eclipse MAT CLI (`ParseHeapDump.sh` or `mat`)
-- `async-profiler` (or `profiler.sh`)
+- Eclipse Memory Analyzer (MAT) CLI (required on all platforms)
+- `async-profiler` CLI (optional fallback booster; see Windows note below)
+
+### Recommended concrete tooling (verified on March 14, 2026)
+
+1. MAT CLI (heap dump analyzer):
+- Recommended: Eclipse MAT `1.16.1` package from the official download page:
+  - [https://eclipse.dev/mat/downloads.php](https://eclipse.dev/mat/downloads.php)
+- Use the MAT CLI launcher from that package:
+  - Linux/macOS: `ParseHeapDump.sh`
+  - Windows: `ParseHeapDump.bat`
+- Analyzer report used by this project:
+  - `org.eclipse.mat.api:suspects` (Leak Suspects report)
+  - Official command-line docs: [https://help.eclipse.org/latest/topic/org.eclipse.mat.ui.help/tasks/runningleaksuspectreport.html](https://help.eclipse.org/latest/topic/org.eclipse.mat.ui.help/tasks/runningleaksuspectreport.html)
+
+2. Allocation analyzer:
+- Recommended: `async-profiler v4.3` (latest stable release at time of verification):
+  - [https://github.com/async-profiler/async-profiler/releases](https://github.com/async-profiler/async-profiler/releases)
+- Command reference and usage examples:
+  - [https://github.com/async-profiler/async-profiler](https://github.com/async-profiler/async-profiler)
+
+### Windows compatibility behavior
+
+- MAT deep analysis is supported on Windows via `ParseHeapDump.bat`.
+- If `async-profiler` is not available on Windows, deep mode does **not** fail:
+  - the workflow continues with `JFR + heap dump + MAT suspects`
+  - report confidence is still based on independent signals (growth, GC pressure, MAT, JFR support)
+  - async-profiler is treated as optional tie-breaker evidence
+- On Linux/macOS, async-profiler is still recommended for stronger allocation evidence.
 
 Optional env overrides:
-- `MAT_BIN=/absolute/path/to/ParseHeapDump.sh`
+- `MAT_BIN=/absolute/path/to/ParseHeapDump.sh` or `C:\\path\\to\\ParseHeapDump.bat`
 - `ASYNC_PROFILER_BIN=/absolute/path/to/async-profiler`
 - `LEAK_HUNTER_ARTIFACT_DIR=/tmp/java-leak-hunter`
+
+Prerequisite checks:
+- Linux/macOS: `./scripts/check_prereqs.sh`
+- Windows (cmd.exe): `scripts\\check_prereqs.bat`
 
 ## Local Setup
 

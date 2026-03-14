@@ -273,7 +273,7 @@ def java_mat_suspects(heap_dump_file: str) -> dict[str, Any]:
             mat_exec = mat_bin
         else:
             mat_exec = require_any_binary(
-                ["ParseHeapDump.sh", "mat"],
+                ["ParseHeapDump.sh", "ParseHeapDump.bat", "mat"],
                 "Install Eclipse MAT CLI and set MAT_BIN if binary is not in PATH.",
             )
 
@@ -319,7 +319,7 @@ def java_async_alloc_profile(
             profiler = async_bin
         else:
             profiler = require_any_binary(
-                ["async-profiler", "profiler.sh"],
+                ["async-profiler", "profiler.sh", "asprof"],
                 "Install async-profiler and set ASYNC_PROFILER_BIN if not in PATH.",
             )
 

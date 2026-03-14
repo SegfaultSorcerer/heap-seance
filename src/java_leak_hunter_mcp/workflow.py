@@ -46,7 +46,7 @@ def _ensure_core_tools() -> None:
     require_binary("jfr", "Install OpenJDK 17+.")
 
 
-def _ensure_deep_tools() -> None:
+def _ensure_deep_tools() -> bool:
     mat_override = Path(os.environ["MAT_BIN"]) if "MAT_BIN" in os.environ else None
     async_override = (
         Path(os.environ["ASYNC_PROFILER_BIN"])
@@ -58,17 +58,21 @@ def _ensure_deep_tools() -> None:
         pass
     else:
         require_any_binary(
-            ["ParseHeapDump.sh", "mat"],
+            ["ParseHeapDump.sh", "ParseHeapDump.bat", "mat"],
             "Install Eclipse MAT CLI and set MAT_BIN if needed.",
         )
 
     if async_override and async_override.exists():
-        pass
-    else:
+        return True
+
+    try:
         require_any_binary(
-            ["async-profiler", "profiler.sh"],
+            ["async-profiler", "profiler.sh", "asprof"],
             "Install async-profiler and set ASYNC_PROFILER_BIN if needed.",
         )
+        return True
+    except ToolingMissingError:
+        return False
 
 
 def _pick_pid(pid: int | None, match: str | None) -> tuple[int | None, list[str]]:
@@ -172,11 +176,17 @@ def run_workflow(
 
     if deep_needed:
         try:
-            _ensure_deep_tools()
+            async_available = _ensure_deep_tools()
         except ToolingMissingError as exc:
             return _as_error(
                 str(exc),
-                "Deep forensics required by balanced policy but external tools are missing.",
+                "Deep forensics requires MAT. Install MAT CLI (ParseHeapDump.sh/.bat) and retry.",
+            )
+
+        report["signals"]["async_profiler_available"] = async_available
+        if not async_available:
+            report["evidence"].append(
+                "async-profiler not detected. Continuing deep analysis with JFR + MAT fallback."
             )
 
         jfr_result = java_jfr_start(pid=resolved_pid, profile="profile", duration_s=45)
@@ -202,10 +212,15 @@ def run_workflow(
         mat_signal = mat_holder_signal(mat_result["metrics"])
         report["signals"]["mat_holder"] = mat_signal
 
-        alloc_result = java_async_alloc_profile(pid=resolved_pid, duration_s=30)
-        if alloc_result["status"] != "ok":
-            return alloc_result
-        report["artifacts"]["async_alloc_profile"] = alloc_result["raw_artifact_path"]
+        if async_available:
+            alloc_result = java_async_alloc_profile(pid=resolved_pid, duration_s=30)
+            if alloc_result["status"] == "ok":
+                report["artifacts"]["async_alloc_profile"] = alloc_result["raw_artifact_path"]
+            else:
+                report["evidence"].append(
+                    "async-profiler execution failed; falling back to JFR+MAT evidence."
+                )
+                report["signals"]["async_profiler_runtime_error"] = True
 
     assessment = overall_confidence(
         monotonic_candidates=monotonic,

@@ -21,8 +21,9 @@ Workflow:
    - `java_jfr_summary(jfr_file)`
    - `java_heap_dump(pid, live_only=true)`
    - `java_mat_suspects(heap_dump_file)`
-   - `java_async_alloc_profile(pid, duration_s=30)`
-6. If deep path is required but MAT/async-profiler is unavailable, stop with actionable install guidance.
+   - `java_async_alloc_profile(pid, duration_s=30)` (optional tie-breaker if available)
+6. If MAT is unavailable, stop with actionable install guidance.
+7. If async-profiler is unavailable (common on Windows), continue with JFR + MAT and mention fallback in the report.
 
 Output exactly these sections:
 - Verdict

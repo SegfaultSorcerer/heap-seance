@@ -18,7 +18,7 @@ Use this project to diagnose Java memory leaks with low false-positive bias.
    - JFR recording + summary
    - heap dump
    - MAT leak suspects
-   - async-profiler allocation profile
+   - async-profiler allocation profile (optional tie-breaker)
 5. Return a structured report with confidence and remediation next steps.
 
 ## Output format requirements
@@ -31,5 +31,6 @@ Always include:
 
 ## Tooling constraints
 
-- If MAT or async-profiler is missing and deep forensics is required, fail explicitly and provide recovery instructions.
+- If MAT is missing and deep forensics is required, fail explicitly and provide recovery instructions.
+- If async-profiler is missing, continue with JFR + MAT fallback and document reduced evidence depth.
 - Do not claim high confidence without evidence from at least two independent signals.

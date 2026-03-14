@@ -17,13 +17,14 @@ Mandatory sequence:
    - `java_jfr_summary(jfr_file)`
    - `java_heap_dump(pid, live_only=true)`
    - `java_mat_suspects(heap_dump_file)`
-   - `java_async_alloc_profile(pid, duration_s=30)`
+   - `java_async_alloc_profile(pid, duration_s=30)` when available
 4. Correlate evidence:
    - histogram growth candidates
    - old-gen pressure trend
    - MAT dominator/retained holder findings
    - JFR/allocation support
-5. If MAT or async-profiler missing, stop and return explicit installation guidance.
+5. If MAT is missing, stop and return explicit installation guidance.
+6. If async-profiler is missing (especially on Windows), continue and declare JFR+MAT fallback mode.
 
 Output exactly these sections:
 - Verdict
