@@ -142,10 +142,16 @@ def parse_jfr_summary(text: str, *, top_n: int = 15) -> dict[str, Any]:
 
 def parse_mat_suspects_output(text: str) -> dict[str, Any]:
     suspects = []
-    html_paths = re.findall(r"(/[\w./-]+\.html)", text)
+    # Match both Unix and Windows paths to .html or .zip files
+    html_paths = re.findall(r"(?:[A-Za-z]:\\|/)[\w.\\/: -]+\.(?:html|zip)", text)
 
+    progress_prefixes = ("subtask:", "task:", "finding", "[")
     for line in text.splitlines():
         stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.lower().startswith(progress_prefixes):
+            continue
         if "leak" in stripped.lower() or "suspect" in stripped.lower():
             suspects.append(stripped)
 

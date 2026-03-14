@@ -311,14 +311,29 @@ def java_mat_suspects(heap_dump_file: str) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         return _command_failed(exc)
 
-    report_path = parsed["report_paths"][0] if parsed["report_paths"] else None
-    confidence = "high" if parsed["suspect_lines"] else "medium"
+    # MAT writes reports next to the heap dump — scan for them
+    report_paths = list(parsed["report_paths"])
+    heap_stem = heap_path.stem
+    heap_dir = heap_path.parent
+    for pattern in (f"{heap_stem}_Leak_Suspects.zip", f"{heap_stem}*Leak*.html"):
+        for found in heap_dir.glob(pattern):
+            path_str = str(found)
+            if path_str not in report_paths:
+                report_paths.append(path_str)
+
+    report_path = report_paths[0] if report_paths else None
+    confidence = "high" if parsed["suspect_lines"] or report_paths else "medium"
+
+    evidence = [f"MAT suspects analysis completed for {heap_path}."]
+    evidence.extend(parsed["suspect_lines"][:5])
+    if report_paths:
+        evidence.append(f"Report(s): {', '.join(report_paths[:3])}")
 
     return ok_result(
-        evidence=[f"MAT suspects analysis completed for {heap_path}."] + parsed["suspect_lines"][:5],
+        evidence=evidence,
         metrics={
             "suspect_line_count": len(parsed["suspect_lines"]),
-            "report_paths": parsed["report_paths"],
+            "report_paths": report_paths,
         },
         confidence=confidence,
         next_recommended_action="Correlate MAT dominators with class histogram and allocation profile.",
