@@ -32,17 +32,35 @@ Heap Seance follows a two-stage escalation model. No deep forensics unless the e
 
 Requires [uv](https://docs.astral.sh/uv/getting-started/installation/) and OpenJDK 17+.
 
-### 1. Clone and register
+### 1. Clone
 
 ```bash
 git clone https://github.com/your-org/heap-seance.git
-cd heap-seance
-claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 
-That's it. `uv run` handles the virtual environment and dependencies automatically.
+### 2. Add `.mcp.json` to your Java project
 
-### 2. Run
+In the project you want to investigate, create a `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "heap-seance": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/heap-seance", "python", "-m", "heap_seance_mcp.server"],
+      "env": {
+        "JAVA_HOME": "/path/to/jdk-17",
+        "MAT_BIN": "/path/to/ParseHeapDump.sh",
+        "ASYNC_PROFILER_BIN": "/path/to/asprof"
+      }
+    }
+  }
+}
+```
+
+`--directory` points to where you cloned Heap Seance. `uv run` handles the virtual environment and dependencies automatically. `ASYNC_PROFILER_BIN` is optional — if missing, deep mode continues with JFR + MAT.
+
+### 3. Run
 
 ```bash
 /leak-scan my-service        # conservative scan
@@ -120,18 +138,16 @@ scripts\check_prereqs.bat           # Windows
 
 ### Environment overrides
 
-Set these in your `.mcp.json` (recommended) or as shell variables:
+Set these in your `.mcp.json` `env` block (recommended) or as shell variables:
 
-```json
-"env": {
-  "JAVA_HOME": "/path/to/jdk-17",
-  "MAT_BIN": "/path/to/ParseHeapDump.sh",
-  "ASYNC_PROFILER_BIN": "/path/to/asprof",
-  "HEAP_SEANCE_ARTIFACT_DIR": "/tmp/heap-seance"
-}
-```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JAVA_HOME` | recommended | JDK installation path — `$JAVA_HOME/bin` is searched first for `jcmd`, `jmap`, `jstat`, `jfr` |
+| `MAT_BIN` | for deep mode | Path to `ParseHeapDump.sh` (macOS/Linux) or `.bat` (Windows) |
+| `ASYNC_PROFILER_BIN` | optional | Path to async-profiler binary — tie-breaker evidence, deep mode works without it |
+| `HEAP_SEANCE_ARTIFACT_DIR` | optional | Where `.jfr`, `.hprof`, and reports are saved (default: system temp dir) |
 
-See `.mcp.json.example` for the full config.
+See `.mcp.json.example` for a full config template.
 
 ### Windows notes
 

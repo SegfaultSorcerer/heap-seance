@@ -24,7 +24,10 @@ from .shell_tools import (
 
 
 def _artifact_dir() -> Path:
-    target = Path(os.environ.get("HEAP_SEANCE_ARTIFACT_DIR", "/tmp/heap-seance"))
+    import tempfile
+
+    default = str(Path(tempfile.gettempdir()) / "heap-seance")
+    target = Path(os.environ.get("HEAP_SEANCE_ARTIFACT_DIR", default))
     target.mkdir(parents=True, exist_ok=True)
     return target
 
