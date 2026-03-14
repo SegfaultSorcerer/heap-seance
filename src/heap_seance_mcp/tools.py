@@ -284,9 +284,20 @@ def java_mat_suspects(heap_dump_file: str) -> dict[str, Any]:
                 "Install Eclipse MAT CLI and set MAT_BIN if binary is not in PATH.",
             )
 
+        mat_env: dict[str, str] | None = None
+        java_home = os.environ.get("JAVA_HOME")
+        if java_home:
+            path_sep = ";" if os.name == "nt" else ":"
+            java_bin = os.path.join(java_home, "bin")
+            mat_env = {
+                "JAVA_HOME": java_home,
+                "PATH": java_bin + path_sep + os.environ.get("PATH", ""),
+            }
+
         result = run_command(
             [mat_exec, str(heap_path), "org.eclipse.mat.api:suspects"],
             timeout_s=1200,
+            env=mat_env,
         )
 
         if result.returncode != 0:
