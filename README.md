@@ -30,29 +30,26 @@ Heap Seance follows a two-stage escalation model. No deep forensics unless the e
 
 ## Quick Start
 
-### 1. Install
+Requires [uv](https://docs.astral.sh/uv/getting-started/installation/) and OpenJDK 17+.
+
+### 1. Clone and register
 
 ```bash
 git clone https://github.com/your-org/heap-seance.git
 cd heap-seance
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e .
+claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 
-### 2. Register the MCP server
+That's it. `uv run` handles the virtual environment and dependencies automatically.
 
-```bash
-claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
-```
-
-### 3. Run
+### 2. Run
 
 ```bash
 /leak-scan my-service        # conservative scan
 /leak-deep 12345             # full forensics by PID
 ```
 
-That's it. Heap Seance resolves the target process, collects evidence, and returns a structured verdict.
+Heap Seance resolves the target process, collects evidence, and returns a structured verdict.
 
 ## MCP Tools
 
@@ -138,9 +135,8 @@ export HEAP_SEANCE_ARTIFACT_DIR="/tmp/heap-seance"   # default
 ## CLI Usage (without Claude Code)
 
 ```bash
-source .venv/bin/activate
-heap-seance --mode scan --match your-app
-heap-seance --mode deep --pid 12345 --output json
+uv run heap-seance --mode scan --match your-app
+uv run heap-seance --mode deep --pid 12345 --output json
 ```
 
 ## Platform Setup
@@ -149,17 +145,18 @@ heap-seance --mode deep --pid 12345 --output json
 <summary><strong>macOS / Linux</strong></summary>
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+# install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# optional: configure deep-forensics tools
 export MAT_BIN="/Applications/mat/ParseHeapDump.sh"       # if not in PATH
 export ASYNC_PROFILER_BIN="/opt/async-profiler/asprof"     # if not in PATH
 
+# check prerequisites
 ./scripts/check_prereqs.sh
 
-claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
-claude mcp list
+# register MCP server
+claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 
 </details>
@@ -168,17 +165,31 @@ claude mcp list
 <summary><strong>Windows (PowerShell)</strong></summary>
 
 ```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
+# install uv (if not already installed)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
+# optional: configure deep-forensics tools
 $env:MAT_BIN = "C:\tools\mat\ParseHeapDump.bat"           # if not in PATH
 $env:ASYNC_PROFILER_BIN = "C:\path\to\asprof"              # optional
 
+# check prerequisites
 cmd /c scripts\check_prereqs.bat
 
+# register MCP server
+claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
+```
+
+</details>
+
+<details>
+<summary><strong>Manual setup (without uv)</strong></summary>
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate       # Windows: .\.venv\Scripts\Activate.ps1
+pip install -e .
+
 claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
-claude mcp list
 ```
 
 </details>
