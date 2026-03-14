@@ -162,7 +162,6 @@ def java_jfr_start(
 ) -> dict[str, Any]:
     try:
         require_binary("jcmd", "Install OpenJDK 17+ so jcmd is available.")
-        require_binary("jfr", "Install OpenJDK 17+ so jfr is available.")
         path = Path(out_file) if out_file else _artifact_dir() / f"jfr-{pid}-{_timestamp()}.jfr"
         path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -212,8 +211,13 @@ def java_jfr_summary(jfr_file: str) -> dict[str, Any]:
         )
 
     try:
-        require_binary("jfr", "Install OpenJDK 17+ so jfr is available.")
-        output = ensure_success(run_command(["jfr", "summary", str(path)], timeout_s=120)).stdout
+        from .shell_tools import which
+
+        jfr_bin = which("jfr")
+        if jfr_bin:
+            output = ensure_success(run_command([jfr_bin, "summary", str(path)], timeout_s=120)).stdout
+        else:
+            output = ensure_success(run_command(["jcmd", "JFR.view", str(path)], timeout_s=120)).stdout
         parsed = parse_jfr_summary(output)
     except Exception as exc:  # noqa: BLE001
         return _command_failed(exc)

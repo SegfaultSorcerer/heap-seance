@@ -43,7 +43,6 @@ def _ensure_core_tools() -> None:
     require_binary("jcmd", "Install OpenJDK 17+.")
     require_binary("jmap", "Install OpenJDK 17+.")
     require_binary("jstat", "Install OpenJDK 17+.")
-    require_binary("jfr", "Install OpenJDK 17+.")
 
 
 def _ensure_deep_tools() -> bool:

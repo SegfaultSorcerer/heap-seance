@@ -27,9 +27,10 @@ class CommandExecutionError(RuntimeError):
 def which(binary: str) -> str | None:
     java_home = os.environ.get("JAVA_HOME")
     if java_home:
-        candidate = os.path.join(java_home, "bin", binary)
-        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-            return candidate
+        for suffix in ("", ".exe"):
+            candidate = os.path.join(java_home, "bin", binary + suffix)
+            if os.path.isfile(candidate):
+                return candidate
     return shutil.which(binary)
 
 
