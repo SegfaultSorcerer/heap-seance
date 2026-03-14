@@ -90,6 +90,21 @@ Every tool returns the same unified schema:
 6. **Fix and re-scan.** Bounded caches, weak refs, listener cleanup — then `/leak-scan` again to confirm the signal drops.
 7. **Keep artifacts.** `.jfr`, `.hprof`, and MAT reports are saved for team review.
 
+### What you get back
+
+**`/leak-scan`** returns: Verdict, Confidence, Key Evidence, Suspect Types, Artifacts, Next Steps.
+
+**`/leak-deep`** goes further: Verdict, Confidence, Root Holder Hypothesis (who retains the growing objects and via which field/chain), Supporting Evidence, Artifacts, Remediation Hypotheses (concrete fix suggestions), Verification Plan.
+
+### Confidence ladder
+
+| Confidence | What it means | Signals required |
+|------------|--------------|-----------------|
+| `none` | No leak evidence | — |
+| `low` | Weak growth, no GC pressure | histogram only |
+| `medium` | Growth + GC is losing | histogram + GC pressure |
+| `high` | Probable leak, corroborated | histogram + GC + MAT/JFR |
+
 ## Prerequisites
 
 **Core** (required):
