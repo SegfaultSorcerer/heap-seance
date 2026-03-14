@@ -124,6 +124,7 @@ Set these in your `.mcp.json` (recommended) or as shell variables:
 
 ```json
 "env": {
+  "JAVA_HOME": "/path/to/jdk-17",
   "MAT_BIN": "/path/to/ParseHeapDump.sh",
   "ASYNC_PROFILER_BIN": "/path/to/asprof",
   "HEAP_SEANCE_ARTIFACT_DIR": "/tmp/heap-seance"
