@@ -120,11 +120,17 @@ scripts\check_prereqs.bat           # Windows
 
 ### Environment overrides
 
-```bash
-export MAT_BIN="/path/to/ParseHeapDump.sh"
-export ASYNC_PROFILER_BIN="/path/to/asprof"
-export HEAP_SEANCE_ARTIFACT_DIR="/tmp/heap-seance"   # default
+Set these in your `.mcp.json` (recommended) or as shell variables:
+
+```json
+"env": {
+  "MAT_BIN": "/path/to/ParseHeapDump.sh",
+  "ASYNC_PROFILER_BIN": "/path/to/asprof",
+  "HEAP_SEANCE_ARTIFACT_DIR": "/tmp/heap-seance"
+}
 ```
+
+See `.mcp.json.example` for the full config.
 
 ### Windows notes
 
@@ -148,14 +154,10 @@ uv run heap-seance --mode deep --pid 12345 --output json
 # install uv (if not already installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# optional: configure deep-forensics tools
-export MAT_BIN="/Applications/mat/ParseHeapDump.sh"       # if not in PATH
-export ASYNC_PROFILER_BIN="/opt/async-profiler/asprof"     # if not in PATH
-
 # check prerequisites
 ./scripts/check_prereqs.sh
 
-# register MCP server
+# register MCP server (env vars go in .mcp.json instead — see .mcp.json.example)
 claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 
@@ -168,14 +170,10 @@ claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.s
 # install uv (if not already installed)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# optional: configure deep-forensics tools
-$env:MAT_BIN = "C:\tools\mat\ParseHeapDump.bat"           # if not in PATH
-$env:ASYNC_PROFILER_BIN = "C:\path\to\asprof"              # optional
-
 # check prerequisites
 cmd /c scripts\check_prereqs.bat
 
-# register MCP server
+# register MCP server (env vars go in .mcp.json instead — see .mcp.json.example)
 claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 

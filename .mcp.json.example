@@ -3,7 +3,12 @@
     "heap-seance": {
       "command": "uv",
       "args": ["run", "python", "-m", "heap_seance_mcp.server"],
-      "cwd": "."
+      "cwd": ".",
+      "env": {
+        "MAT_BIN": "/path/to/ParseHeapDump.sh",
+        "ASYNC_PROFILER_BIN": "/path/to/asprof",
+        "HEAP_SEANCE_ARTIFACT_DIR": "/tmp/heap-seance"
+      }
     }
   }
 }
