@@ -19,7 +19,7 @@ This command runs deep evidence collection **unconditionally** — it does not w
 
 These establish the growth and GC context that deep tools will corroborate or refute.
 
-1. Collect 3 histogram samples with `java_class_histogram(pid, live_only=true)`, **6-second pause** between each. This gives the monotonic growth baseline — classes whose retained bytes rise across all 3 snapshots are candidates.
+1. Collect 3 histogram samples with `java_class_histogram(pid, live_only=true)`. **Between each sample, ask the user to perform the suspected leaking action** in their application (e.g., open/close a view, send requests, load/discard data) and confirm when done. Without exercising the app between snapshots, leaks stay invisible. This gives the monotonic growth baseline — classes whose retained bytes rise across all 3 snapshots are candidates.
 2. Collect GC snapshot with `java_gc_snapshot(pid, interval_s=2, samples=6)`. This reveals whether old-gen is under pressure and Full GCs are occurring.
 
 ## Step 3: Deep evidence collection

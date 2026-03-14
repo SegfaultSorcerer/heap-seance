@@ -15,9 +15,14 @@ Interpret `$ARGUMENTS` as either a PID (integer) or a process name/pattern (stri
 
 ## Step 2: Collect 3 histogram samples
 
-Call `java_class_histogram(pid, live_only=true)` three times with a **6-second pause** between each call.
+Call `java_class_histogram(pid, live_only=true)` three times. **Between each sample, ask the user to perform the suspected leaking action** in their application (e.g., open/close a view, send requests, load/discard data) and confirm when done. This is critical — without exercising the app between snapshots, leaks stay invisible because no new objects are created along the leaking path.
 
-Why 3 samples with gaps: detecting monotonic growth requires at least 3 data points spread over time. Without the pause, transient allocations between GC cycles create false positives. The `live_only=true` flag triggers a GC before each snapshot, so only reachable objects are counted — this filters out garbage that would skew the signal.
+Prompt the user like this:
+- After sample 1: "Histogram sample 1 collected. Please perform the action you suspect is leaking (e.g., open/close views, trigger requests), then let me know when you're done."
+- After sample 2: "Histogram sample 2 collected. Please repeat the same action once more, then confirm."
+- After sample 3: proceed to Step 3.
+
+Why 3 samples: detecting monotonic growth requires at least 3 data points. The `live_only=true` flag triggers a GC before each snapshot, so only reachable objects are counted — this filters out garbage that would skew the signal.
 
 ## Step 3: Collect GC pressure snapshot
 
