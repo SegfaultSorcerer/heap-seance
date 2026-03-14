@@ -189,15 +189,21 @@ def run_workflow(
             )
 
         jfr_result = java_jfr_start(pid=resolved_pid, profile="profile", duration_s=45)
-        if jfr_result["status"] != "ok":
-            return jfr_result
-        report["artifacts"]["jfr"] = jfr_result["raw_artifact_path"]
-
-        jfr_summary = java_jfr_summary(jfr_result["raw_artifact_path"])
-        if jfr_summary["status"] != "ok":
-            return jfr_summary
-        jfr_signal = jfr_support_signal(jfr_summary["metrics"], monotonic)
-        report["signals"]["jfr_support"] = jfr_signal
+        if jfr_result["status"] == "ok":
+            report["artifacts"]["jfr"] = jfr_result["raw_artifact_path"]
+            jfr_summary = java_jfr_summary(jfr_result["raw_artifact_path"])
+            if jfr_summary["status"] == "ok":
+                jfr_signal = jfr_support_signal(jfr_summary["metrics"], monotonic)
+                report["signals"]["jfr_support"] = jfr_signal
+            else:
+                report["evidence"].append(
+                    "JFR recording unreadable (possibly old JFR v0.9 format from Java 8). "
+                    "Continuing with histogram + GC + MAT evidence."
+                )
+        else:
+            report["evidence"].append(
+                "JFR recording failed. Continuing with histogram + GC + MAT evidence."
+            )
 
         heap_result = java_heap_dump(pid=resolved_pid, live_only=True)
         if heap_result["status"] != "ok":
