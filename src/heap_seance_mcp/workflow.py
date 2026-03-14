@@ -255,7 +255,7 @@ def run_workflow(
 
 def render_markdown(report: dict[str, Any]) -> str:
     lines = [
-        "# Java Leak Hunter Report",
+        "# Heap Seance Report",
         "",
         f"- Status: `{report.get('status', 'unknown')}`",
         f"- Verdict: `{report.get('verdict', 'unknown')}`",
@@ -288,7 +288,7 @@ def render_markdown(report: dict[str, Any]) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run Java Leak Hunter workflow")
+    parser = argparse.ArgumentParser(description="Run Heap Seance workflow")
     parser.add_argument("--mode", choices=["scan", "deep"], default="scan")
     parser.add_argument("--pid", type=int, default=None)
     parser.add_argument("--match", type=str, default=None)

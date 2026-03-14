@@ -1,4 +1,4 @@
-"""Java Leak Hunter MCP package."""
+"""Heap Seance MCP package."""
 
 __all__ = [
     "tools",

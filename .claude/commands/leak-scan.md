@@ -1,6 +1,6 @@
 ---
 description: Conservative Java leak scan with balanced escalation
-allowed-tools: Read,mcp__java_leak_hunter
+allowed-tools: Read,mcp__heap_seance
 ---
 
 Run a conservative Java leak scan for `$ARGUMENTS`.

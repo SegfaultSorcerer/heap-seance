@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "java-leak-hunter-mcp"
+name = "heap-seance-mcp"
 version = "0.1.0"
 description = "MCP server and workflow helpers for Java memory leak detection"
 readme = "README.md"
@@ -13,8 +13,8 @@ dependencies = [
 ]
 
 [project.scripts]
-java-leak-hunter-mcp = "java_leak_hunter_mcp.server:main"
-leak-workflow = "java_leak_hunter_mcp.workflow:main"
+heap-seance-mcp = "heap_seance_mcp.server:main"
+heap-seance = "heap_seance_mcp.workflow:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

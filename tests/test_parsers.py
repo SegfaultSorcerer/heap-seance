@@ -7,7 +7,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from java_leak_hunter_mcp.parsers import (
+from heap_seance_mcp.parsers import (
     parse_heap_histogram,
     parse_jcmd_processes,
     parse_jfr_summary,

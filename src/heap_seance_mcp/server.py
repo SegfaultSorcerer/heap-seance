@@ -21,7 +21,7 @@ def _must_have_mcp() -> Any:
 
 def build_server() -> Any:
     fastmcp = _must_have_mcp()
-    mcp = fastmcp("java-leak-hunter")
+    mcp = fastmcp("heap-seance")
 
     @mcp.tool()
     def java_list_processes() -> dict[str, Any]:
@@ -77,7 +77,7 @@ def main() -> None:
         server = build_server()
         server.run()
     except Exception as exc:  # noqa: BLE001
-        print(f"Failed to start java-leak-hunter MCP server: {exc}", file=sys.stderr)
+        print(f"Failed to start heap-seance MCP server: {exc}", file=sys.stderr)
         raise
 
 

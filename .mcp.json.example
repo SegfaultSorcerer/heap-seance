@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "java-leak-hunter": {
+    "heap-seance": {
       "command": "python",
-      "args": ["-m", "java_leak_hunter_mcp.server"],
+      "args": ["-m", "heap_seance_mcp.server"],
       "cwd": "."
     }
   }

@@ -7,4 +7,4 @@ if [[ -d "$ROOT/.venv" ]]; then
   source "$ROOT/.venv/bin/activate"
 fi
 
-python -m java_leak_hunter_mcp.workflow "$@"
+python -m heap_seance_mcp.workflow "$@"

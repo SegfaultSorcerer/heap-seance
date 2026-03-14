@@ -1,4 +1,4 @@
-# Java Leak Hunter Project Instructions
+# Heap Seance Project Instructions
 
 Use this project to diagnose Java memory leaks with low false-positive bias.
 

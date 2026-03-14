@@ -1,6 +1,6 @@
 ---
 description: Force deep Java leak forensics (JFR + heap dump + MAT + async-profiler)
-allowed-tools: Read,mcp__java_leak_hunter
+allowed-tools: Read,mcp__heap_seance
 ---
 
 Run full deep Java leak forensics for `$ARGUMENTS`.

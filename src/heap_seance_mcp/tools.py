@@ -24,7 +24,7 @@ from .shell_tools import (
 
 
 def _artifact_dir() -> Path:
-    target = Path(os.environ.get("LEAK_HUNTER_ARTIFACT_DIR", "/tmp/java-leak-hunter"))
+    target = Path(os.environ.get("HEAP_SEANCE_ARTIFACT_DIR", "/tmp/heap-seance"))
     target.mkdir(parents=True, exist_ok=True)
     return target
 
@@ -169,7 +169,7 @@ def java_jfr_start(
                     "jcmd",
                     str(pid),
                     "JFR.start",
-                    "name=LeakHunter",
+                    "name=HeapSeance",
                     f"settings={profile}",
                     f"duration={max(5, duration_s)}s",
                     f"filename={str(path)}",

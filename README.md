@@ -1,4 +1,4 @@
-# Java Leak Hunter MCP (POC)
+# Heap Seance MCP (POC)
 
 Hybrid POC for leak diagnostics in local Java processes:
 - MCP server executes JVM forensics (`jcmd`, `jmap`, `jstat`, `jfr`, MAT, async-profiler).
@@ -62,7 +62,7 @@ Required deep-forensics tools:
 Optional env overrides:
 - `MAT_BIN=/absolute/path/to/ParseHeapDump.sh` or `C:\\path\\to\\ParseHeapDump.bat`
 - `ASYNC_PROFILER_BIN=/absolute/path/to/async-profiler`
-- `LEAK_HUNTER_ARTIFACT_DIR=/tmp/java-leak-hunter`
+- `HEAP_SEANCE_ARTIFACT_DIR=/tmp/heap-seance`
 
 Prerequisite checks:
 - Linux/macOS: `./scripts/check_prereqs.sh`
@@ -102,7 +102,7 @@ export ASYNC_PROFILER_BIN="/opt/async-profiler/asprof"
 5. Register MCP server in Claude Code (project scope):
 
 ```bash
-claude mcp add java-leak-hunter --scope project -- python -m java_leak_hunter_mcp.server
+claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
 ```
 
 6. Verify MCP registration:
@@ -147,7 +147,7 @@ cmd /c scripts\check_prereqs.bat
 6. Register MCP server in Claude Code (project scope):
 
 ```powershell
-claude mcp add java-leak-hunter --scope project -- python -m java_leak_hunter_mcp.server
+claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
 ```
 
 7. Verify MCP registration:
@@ -214,16 +214,16 @@ macOS/Linux:
 
 ```bash
 source .venv/bin/activate
-leak-workflow --mode scan --match your-app
-leak-workflow --mode deep --pid 12345 --output json
+heap-seance --mode scan --match your-app
+heap-seance --mode deep --pid 12345 --output json
 ```
 
 Windows PowerShell:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-leak-workflow --mode scan --match your-app
-leak-workflow --mode deep --pid 12345 --output json
+heap-seance --mode scan --match your-app
+heap-seance --mode deep --pid 12345 --output json
 ```
 
 ## Validation
