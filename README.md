@@ -68,28 +68,115 @@ Prerequisite checks:
 - Linux/macOS: `./scripts/check_prereqs.sh`
 - Windows (cmd.exe): `scripts\\check_prereqs.bat`
 
-## Local Setup
+## Step-by-step Setup with Claude Code
+
+### macOS Setup (zsh/bash)
+
+1. Clone/open this project in your terminal.
+2. Create and activate virtual environment:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 pip install -e .
 ```
 
-## Run as MCP Server
+3. Configure deep-forensics tools (recommended):
+- Install MAT and set `MAT_BIN` to `ParseHeapDump.sh` if it is not in `PATH`.
+- Install async-profiler and set `ASYNC_PROFILER_BIN` if it is not in `PATH`.
+
+Example:
 
 ```bash
-source .venv/bin/activate
-python -m java_leak_hunter_mcp.server
+export MAT_BIN="/Applications/mat/ParseHeapDump.sh"
+export ASYNC_PROFILER_BIN="/opt/async-profiler/asprof"
 ```
 
-Then register this process in Claude Code as an MCP server (project scope). For example:
+4. Run prerequisite check:
+
+```bash
+./scripts/check_prereqs.sh
+```
+
+5. Register MCP server in Claude Code (project scope):
 
 ```bash
 claude mcp add java-leak-hunter --scope project -- python -m java_leak_hunter_mcp.server
 ```
 
-## Use Workflow CLI (optional)
+6. Verify MCP registration:
+
+```bash
+claude mcp list
+```
+
+### Windows Setup (PowerShell)
+
+1. Open PowerShell in the project folder.
+2. Create and activate virtual environment:
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -e .
+```
+
+3. Configure MAT (required for deep path):
+- Set `MAT_BIN` to `ParseHeapDump.bat` if not in `PATH`.
+
+Example:
+
+```powershell
+$env:MAT_BIN = "C:\tools\mat\ParseHeapDump.bat"
+```
+
+4. Optional: configure async-profiler if you have a compatible setup:
+
+```powershell
+$env:ASYNC_PROFILER_BIN = "C:\path\to\async-profiler-executable"
+```
+
+5. Run prerequisite check:
+
+```powershell
+cmd /c scripts\check_prereqs.bat
+```
+
+6. Register MCP server in Claude Code (project scope):
+
+```powershell
+claude mcp add java-leak-hunter --scope project -- python -m java_leak_hunter_mcp.server
+```
+
+7. Verify MCP registration:
+
+```powershell
+claude mcp list
+```
+
+Note for Windows deep mode:
+- If async-profiler is missing, deep analysis automatically falls back to `JFR + heap dump + MAT`.
+- If MAT is missing, deep mode will fail with installation guidance.
+
+## Run in Claude Code
+
+This repo includes:
+- `.claude/commands/leak-scan.md`
+- `.claude/commands/leak-deep.md`
+
+Inside Claude Code:
+- `/leak-scan <pid-or-pattern>`
+- `/leak-deep <pid-or-pattern>`
+
+Examples:
+- `/leak-scan my-service`
+- `/leak-deep 12345`
+
+## Optional CLI Workflow (outside Claude Code)
+
+macOS/Linux:
 
 ```bash
 source .venv/bin/activate
@@ -97,20 +184,20 @@ leak-workflow --mode scan --match your-app
 leak-workflow --mode deep --pid 12345 --output json
 ```
 
-## Claude Code Commands
+Windows PowerShell:
 
-This repo includes:
-- `.claude/commands/leak-scan.md`
-- `.claude/commands/leak-deep.md`
+```powershell
+.\.venv\Scripts\Activate.ps1
+leak-workflow --mode scan --match your-app
+leak-workflow --mode deep --pid 12345 --output json
+```
 
-Usage in Claude Code:
-- `/leak-scan <pid-or-pattern>`
-- `/leak-deep <pid-or-pattern>`
+## Validation
 
-## Test and Validation
+Run tests:
 
 ```bash
-python3 -m unittest discover -s tests -p 'test_*.py'
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 Example Java scenarios are available in `examples/java-scenarios`.
