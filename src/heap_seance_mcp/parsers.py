@@ -43,7 +43,7 @@ def parse_jstat_gcutil(text: str) -> dict[str, Any]:
 
         row: dict[str, float] = {}
         for key, value in zip(header, parts):
-            row[key] = float(value)
+            row[key] = float(value.replace(",", "."))
         samples.append(row)
 
     if not samples:

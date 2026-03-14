@@ -37,6 +37,17 @@ class ParserTests(unittest.TestCase):
         self.assertAlmostEqual(82.0, parsed["summary"]["max_oldgen_utilization"])
         self.assertAlmostEqual(1.0, parsed["summary"]["full_gc_delta"])
 
+    def test_parse_jstat_gcutil_comma_locale(self) -> None:
+        raw = """\
+  S0     S1     E      O      M     CCS    YGC   YGCT   FGC    FGCT     GCT
+  0,00   0,00  11,12  65,00  80,12 71,12    10   0,123     1    0,500    0,623
+  0,00   0,00  22,11  82,00  80,12 71,12    11   0,140     2    0,710    0,850
+"""
+        parsed = parse_jstat_gcutil(raw)
+        self.assertEqual(2, parsed["summary"]["sample_count"])
+        self.assertAlmostEqual(82.0, parsed["summary"]["max_oldgen_utilization"])
+        self.assertAlmostEqual(1.0, parsed["summary"]["full_gc_delta"])
+
     def test_parse_heap_histogram(self) -> None:
         raw = """\
  num     #instances         #bytes  class name (module)
