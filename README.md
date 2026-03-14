@@ -174,6 +174,40 @@ Examples:
 - `/leak-scan my-service`
 - `/leak-deep 12345`
 
+## How to Use (Leak Investigation Workflow)
+
+Use this sequence when you suspect a leak in a running Java app (including GUI apps):
+
+1. Start the target app normally.
+- Example: launch from IDE, app launcher, or startup script.
+- Wait until the app is fully initialized.
+
+2. Reproduce the suspicious behavior.
+- For GUI apps, perform the user flow that likely leaks memory (open/close views, repeated actions, long-running sessions).
+
+3. Run a conservative scan in Claude Code.
+- Use process pattern:
+  - `/leak-scan MyGuiApp`
+- Or use explicit PID:
+  - `/leak-scan 12345`
+
+4. Check scan output.
+- Focus on `Verdict`, `Confidence`, `Key Evidence`, and `Suspect Types`.
+- If confidence is low but you still observe memory growth, continue with deep analysis.
+
+5. Run deep forensics.
+- `/leak-deep <pid-or-pattern>`
+- This collects JFR, heap dump, and MAT suspects report.
+- If async-profiler is unavailable (common on Windows), the workflow continues with JFR + MAT fallback.
+
+6. Fix and verify.
+- Apply remediation (for example: listener cleanup, bounded caches, lifecycle unsubscription).
+- Restart the app and rerun `/leak-scan` (and `/leak-deep` if needed).
+- Compare verdict/confidence and suspect classes before vs. after.
+
+7. Keep artifacts for evidence.
+- Use artifact paths from the report (`.jfr`, `.hprof`, MAT report output) for team review and regression tracking.
+
 ## Optional CLI Workflow (outside Claude Code)
 
 macOS/Linux:
