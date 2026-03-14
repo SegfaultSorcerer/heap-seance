@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "java-leak-hunter": {
+      "command": "python",
+      "args": ["-m", "java_leak_hunter_mcp.server"],
+      "cwd": "."
+    }
+  }
+}
