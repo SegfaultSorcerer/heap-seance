@@ -30,7 +30,7 @@ Heap Seance follows a two-stage escalation model. No deep forensics unless the e
 
 ## Quick Start
 
-Requires [uv](https://docs.astral.sh/uv/getting-started/installation/) and OpenJDK 17+.
+Requires [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+, and OpenJDK 17+.
 
 ### 1. Clone
 
