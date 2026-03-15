@@ -7,6 +7,7 @@ name = "heap-seance-mcp"
 version = "0.1.0"
 description = "MCP server and workflow helpers for Java memory leak detection"
 readme = "README.md"
+license = "MIT OR Apache-2.0"
 requires-python = ">=3.10"
 dependencies = [
   "mcp>=1.0.0"

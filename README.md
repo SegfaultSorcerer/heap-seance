@@ -208,6 +208,15 @@ python3 -m unittest discover -s tests -p "test_*.py"
 
 Example Java scenarios for validation live in `examples/java-scenarios/` — a real leak, a bounded cache (no leak), and a burst allocator (no leak).
 
+## Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding tools, signals, and skills.
+
 ## License
 
-MIT
+This project is dual-licensed under either of
+
+- [Apache License, Version 2.0](LICENSE-APACHE)
+- [MIT License](LICENSE-MIT)
+
+at your option.
