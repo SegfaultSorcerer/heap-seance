@@ -8,7 +8,33 @@
   <em>Summoning retained objects from the heap — so you can interrogate what refuses to die.</em>
 </p>
 
-An MCP server + CLI toolkit that channels the spirits of `jcmd`, `jmap`, `jstat`, `jfr`, Eclipse MAT, and async-profiler into a structured leak investigation workflow — designed to run inside [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+<p align="center">
+  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+  <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" alt="Apache 2.0"></a>
+  <img src="https://img.shields.io/badge/python-3.10+-green.svg" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/JDK-17+-orange.svg" alt="JDK 17+">
+  <img src="https://img.shields.io/badge/MCP-server-purple.svg" alt="MCP Server">
+  <img src="https://img.shields.io/badge/Claude_Code-plugin-blueviolet.svg" alt="Claude Code Plugin">
+</p>
+
+<p align="center">
+  An MCP server + CLI toolkit that channels the spirits of <code>jcmd</code>, <code>jmap</code>, <code>jstat</code>, <code>jfr</code>, Eclipse MAT, and async-profiler into a structured leak investigation workflow — designed to run inside <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>.
+</p>
+
+<p align="center">
+  2 slash commands. 8 MCP tools. Conservative by default.
+</p>
+
+---
+
+<p align="center">
+  <a href="#how-it-works">How It Works</a> &bull;
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#mcp-tools">MCP Tools</a> &bull;
+  <a href="#investigation-workflow">Workflow</a> &bull;
+  <a href="#prerequisites">Prerequisites</a> &bull;
+  <a href="#contributing">Contributing</a>
+</p>
 
 ---
 
