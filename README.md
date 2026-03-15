@@ -1,6 +1,12 @@
-# Heap Seance
+<p align="center">
+  <img src="assets/banner.png" alt="Heap Seance" width="700">
+</p>
 
-> *Summoning retained objects from the heap — so you can interrogate what refuses to die.*
+<h1 align="center">Heap Seance</h1>
+
+<p align="center">
+  <em>Summoning retained objects from the heap — so you can interrogate what refuses to die.</em>
+</p>
 
 An MCP server + CLI toolkit that channels the spirits of `jcmd`, `jmap`, `jstat`, `jfr`, Eclipse MAT, and async-profiler into a structured leak investigation workflow — designed to run inside [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
