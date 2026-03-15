@@ -30,7 +30,7 @@ Heap Seance follows a two-stage escalation model. No deep forensics unless the e
 
 ## Quick Start
 
-Requires [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+, and OpenJDK 17+.
+Requires [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+, and a JDK 17+ for tooling (the target app can run any Java version).
 
 ### 1. Clone
 
@@ -99,15 +99,15 @@ Every tool returns the same unified schema:
   "metrics": {},
   "confidence": "none | low | medium | high",
   "next_recommended_action": "...",
-  "raw_artifact_path": "/tmp/heap-seance/..."
+  "raw_artifact_path": "..."
 }
 ```
 
 ## Investigation Workflow
 
 1. **Start your app** and let it initialize fully.
-2. **Reproduce the suspect behavior** — open/close views, repeat actions, let it run.
-3. **`/leak-scan <name-or-pid>`** — conservative first pass.
+2. **`/leak-scan <name-or-pid>`** — takes the first histogram snapshot.
+3. **Exercise the suspect behavior** — the scan prompts you between each of the 3 histogram samples to perform the action you suspect is leaking (open/close views, send requests, repeat workflows). This is critical — without load between samples, leaks stay invisible.
 4. **Read the verdict.** Focus on `Confidence`, `Key Evidence`, `Suspect Types`.
 5. **`/leak-deep <name-or-pid>`** if the scan flags growth, or if you want full forensics regardless.
 6. **Fix and re-scan.** Bounded caches, weak refs, listener cleanup — then `/leak-scan` again to confirm the signal drops.
@@ -130,12 +130,16 @@ Every tool returns the same unified schema:
 
 ## Prerequisites
 
-**Core** (required):
-- OpenJDK 17+ (`jcmd`, `jmap`, `jstat`, `jfr`)
+**Tooling JDK** (required):
+- JDK 17+ for `jcmd`, `jmap`, `jstat` — set via `JAVA_HOME` in `.mcp.json`
+- The target application can run any Java version (including Java 8)
 
 **Deep forensics** (for `/leak-deep`):
-- [Eclipse MAT CLI](https://eclipse.dev/mat/downloads.php) (`ParseHeapDump.sh` / `.bat`) — required
+- [Eclipse MAT CLI](https://eclipse.dev/mat/downloads.php) (`ParseHeapDump.sh` / `.bat`) — required for deep mode
 - [async-profiler](https://github.com/async-profiler/async-profiler/releases) — optional tie-breaker
+
+**Optional tools:**
+- `jfr` CLI — used for JFR summary if available, falls back to `jcmd JFR.view` otherwise. JFR is skipped entirely for Java 8 targets (incompatible format).
 
 Check your setup:
 
@@ -150,18 +154,18 @@ Set these in your `.mcp.json` `env` block (recommended) or as shell variables:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `JAVA_HOME` | recommended | JDK installation path — `$JAVA_HOME/bin` is searched first for `jcmd`, `jmap`, `jstat`, `jfr` |
+| `JAVA_HOME` | recommended | JDK 17+ installation path — `$JAVA_HOME/bin` is searched first for `jcmd`, `jmap`, `jstat`, `jfr`. Also used to launch MAT with the correct Java version. |
 | `MAT_BIN` | for deep mode | Path to `ParseHeapDump.sh` (macOS/Linux) or `.bat` (Windows) |
 | `ASYNC_PROFILER_BIN` | optional | Path to async-profiler binary — tie-breaker evidence, deep mode works without it |
 | `HEAP_SEANCE_ARTIFACT_DIR` | optional | Where `.jfr`, `.hprof`, and reports are saved (default: system temp dir) |
 
 See `.mcp.json.example` for a full config template.
 
-### Windows notes
+### Compatibility notes
 
-- MAT works via `ParseHeapDump.bat`.
-- async-profiler is optional — if missing, deep mode continues with JFR + MAT and notes the reduced evidence depth.
-- If MAT is also missing, deep mode fails with installation guidance.
+- **Java 8 targets**: histogram + GC + MAT work fully. JFR is skipped (v0.9 format incompatible with modern tools).
+- **Windows**: MAT works via `ParseHeapDump.bat`. async-profiler is optional — if missing, deep mode continues with JFR + MAT. Locale-specific decimal separators (comma vs dot) in `jstat` output are handled automatically.
+- **MAT + JAVA_HOME**: MAT is launched with the JDK from `JAVA_HOME`, so it works even if the system default Java is too old for MAT.
 
 ## CLI Usage (without Claude Code)
 
@@ -170,36 +174,15 @@ uv run heap-seance --mode scan --match your-app
 uv run heap-seance --mode deep --pid 12345 --output json
 ```
 
-## Platform Setup
-
 <details>
-<summary><strong>macOS / Linux</strong></summary>
+<summary><strong>Installing uv</strong></summary>
 
 ```bash
-# install uv (if not already installed)
+# macOS / Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# check prerequisites
-./scripts/check_prereqs.sh
-
-# register MCP server (env vars go in .mcp.json instead — see .mcp.json.example)
-claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
-```
-
-</details>
-
-<details>
-<summary><strong>Windows (PowerShell)</strong></summary>
-
-```powershell
-# install uv (if not already installed)
+# Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# check prerequisites
-cmd /c scripts\check_prereqs.bat
-
-# register MCP server (env vars go in .mcp.json instead — see .mcp.json.example)
-claude mcp add heap-seance --scope project -- uv run python -m heap_seance_mcp.server
 ```
 
 </details>
@@ -212,7 +195,7 @@ python3 -m venv .venv
 source .venv/bin/activate       # Windows: .\.venv\Scripts\Activate.ps1
 pip install -e .
 
-claude mcp add heap-seance --scope project -- python -m heap_seance_mcp.server
+heap-seance --mode scan --match your-app
 ```
 
 </details>
