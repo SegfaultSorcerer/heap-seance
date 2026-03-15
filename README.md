@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="Heap Seance" width="700">
+  <img src="assets/banner.png" alt="Heap Seance" width="100%">
 </p>
 
 <h1 align="center">Heap Seance</h1>
