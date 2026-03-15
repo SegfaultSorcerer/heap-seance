@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from typing import Any
 
@@ -75,7 +76,11 @@ def build_server() -> Any:
 def main() -> None:
     try:
         server = build_server()
-        server.run()
+        transport = os.environ.get("MCP_TRANSPORT", "stdio")
+        if transport == "sse":
+            server.run(transport="sse")
+        else:
+            server.run()
     except Exception as exc:  # noqa: BLE001
         print(f"Failed to start heap-seance MCP server: {exc}", file=sys.stderr)
         raise

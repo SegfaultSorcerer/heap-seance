@@ -13,5 +13,8 @@ COPY . .
 RUN uv venv .venv && uv pip install --python .venv/bin/python -e .
 
 ENV PATH="/app/.venv/bin:$PATH"
+ENV MCP_TRANSPORT="sse"
+
+EXPOSE 8000
 
 ENTRYPOINT ["python", "-m", "heap_seance_mcp.server"]
