@@ -79,8 +79,16 @@ def main() -> None:
         transport = "stdio"
         if "--sse" in sys.argv:
             transport = "sse"
+        if "--streamable-http" in sys.argv:
+            transport = "streamable-http"
         transport = os.environ.get("MCP_TRANSPORT", transport)
-        server.run(transport=transport)
+
+        kwargs: dict[str, Any] = {"transport": transport}
+        if transport in ("sse", "streamable-http"):
+            kwargs["host"] = os.environ.get("MCP_HOST", "0.0.0.0")
+            kwargs["port"] = int(os.environ.get("MCP_PORT", "8000"))
+
+        server.run(**kwargs)
     except Exception as exc:  # noqa: BLE001
         print(f"Failed to start heap-seance MCP server: {exc}", file=sys.stderr)
         raise
