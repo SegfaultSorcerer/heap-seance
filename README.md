@@ -60,7 +60,15 @@ In the project you want to investigate, create a `.mcp.json`:
 
 `--directory` points to where you cloned Heap Seance. `uv run` handles the virtual environment and dependencies automatically. `ASYNC_PROFILER_BIN` is optional — if missing, deep mode continues with JFR + MAT.
 
-### 3. Run
+### 3. Copy the Claude Code commands
+
+Copy the `.claude/commands/` folder into your Java project so the `/leak-scan` and `/leak-deep` slash commands are available:
+
+```bash
+cp -r /path/to/heap-seance/.claude/commands/ .claude/commands/
+```
+
+### 4. Run
 
 ```bash
 /leak-scan my-service        # conservative scan
