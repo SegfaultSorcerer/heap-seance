@@ -190,6 +190,11 @@ Set these in your `.mcp.json` `env` block (recommended) or as shell variables:
 | `MAT_BIN` | for deep mode | Path to `ParseHeapDump.sh` (macOS/Linux) or `.bat` (Windows) |
 | `ASYNC_PROFILER_BIN` | optional | Path to async-profiler binary — tie-breaker evidence, deep mode works without it |
 | `HEAP_SEANCE_ARTIFACT_DIR` | optional | Where `.jfr`, `.hprof`, and reports are saved (default: system temp dir) |
+| `MCP_TRANSPORT` | optional | Transport protocol: `stdio` (default), `sse`, or `streamable-http` |
+| `MCP_HOST` | optional | Bind address for SSE/HTTP transport (default: `0.0.0.0`) |
+| `MCP_PORT` | optional | Port for SSE/HTTP transport (default: `8000`) |
+
+CLI flags `--sse` and `--streamable-http` can be used instead of `MCP_TRANSPORT`.
 
 See `.mcp.json.example` for a full config template.
 
