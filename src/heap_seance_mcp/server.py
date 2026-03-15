@@ -76,11 +76,11 @@ def build_server() -> Any:
 def main() -> None:
     try:
         server = build_server()
-        transport = os.environ.get("MCP_TRANSPORT", "stdio")
-        if transport == "sse":
-            server.run(transport="sse")
-        else:
-            server.run()
+        transport = "stdio"
+        if "--sse" in sys.argv:
+            transport = "sse"
+        transport = os.environ.get("MCP_TRANSPORT", transport)
+        server.run(transport=transport)
     except Exception as exc:  # noqa: BLE001
         print(f"Failed to start heap-seance MCP server: {exc}", file=sys.stderr)
         raise
