@@ -60,6 +60,10 @@ Heap Seance follows a two-stage escalation model. No deep forensics unless the e
 
 **Confidence is earned, not assumed.** `high` requires at least two independent strong signals. A single growing class is `watch`. Growth plus GC pressure is `suspicious`. Add a MAT dominator or JFR correlation and you get `probable_memory_leak`.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/segfaultsorcerer-heap-seance).
+
 ## Quick Start
 
 Requires [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.10+, and a JDK 17+ for tooling (the target app can run any Java version).
